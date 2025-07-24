@@ -10,6 +10,7 @@ import Skills from '../components/user/Skills';
 import Resume from '../components/user/Resume';
 import Portfolio from '../components/user/Portfolio';
 import Contact from '../components/user/Contact';
+import UserExtras from '../components/user/UserExtras';
 
 const UserLayout = () => {
   useVendorScripts();

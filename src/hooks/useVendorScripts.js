@@ -12,13 +12,21 @@ import Isotope from 'isotope-layout';
 import 'swiper/css/bundle';
 import 'glightbox/dist/css/glightbox.css';
 
-// Import Bootstrap via Vite (only JS, CSS should be linked via index.html or imported separately)
+// Import CSS files via Vite (you can scope these via layout if needed)
+import '/public/assets/vendor/bootstrap/css/bootstrap.min.css';
+import '/public/assets/vendor/bootstrap-icons/bootstrap-icons.css';
+import '/public/assets/vendor/aos/aos.css';
+import '/public/assets/vendor/glightbox/css/glightbox.min.css';
+import '/public/assets/vendor/swiper/swiper-bundle.min.css';
+import '/public/assets/css/main.css';
+
+// JS only
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 export default function useVendorScripts() {
   useEffect(() => {
     // Init AOS
-    AOS.init();
+    AOS.init({ once: true });
 
     // Init PureCounter
     new PureCounter();
@@ -26,15 +34,20 @@ export default function useVendorScripts() {
     // Init GLightbox
     GLightbox({ selector: '.glightbox' });
 
-    // Init Swiper (example)
+    // Init Swiper
     new Swiper('.swiper', {
       loop: true,
       autoplay: {
         delay: 3000,
+        disableOnInteraction: false,
+      },
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
       },
     });
 
-    // Init Isotope (example)
+    // Init Isotope
     const grid = document.querySelector('.portfolio-container');
     if (grid) {
       new Isotope(grid, {
@@ -43,7 +56,7 @@ export default function useVendorScripts() {
       });
     }
 
-    // Init Typed.js (example)
+    // Init Typed.js
     const typedElement = document.querySelector('.typed');
     if (typedElement) {
       new Typed('.typed', {
