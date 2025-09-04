@@ -1,6 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const AdminSidebar = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  // Helper to check active menu
+  const isActive = (path) => currentPath === path;
+
+  // Helper to check if submenu should be open (if any child path matches)
+  const isOpen = (paths) => paths.some(path => currentPath.startsWith(path));
+
   return (
     <aside id="layout-menu" className="layout-menu menu-vertical menu bg-menu-theme">
       <div className="app-brand demo">
@@ -16,10 +25,6 @@ const AdminSidebar = () => {
                 xmlnsXlink="http://www.w3.org/1999/xlink"
               >
                 {/* SVG paths go here */}
-                <defs>
-                  {/* ... paths as in original */}
-                </defs>
-                {/* ... rest of SVG */}
               </svg>
             </span>
           </span>
@@ -36,76 +41,76 @@ const AdminSidebar = () => {
 
       <ul className="menu-inner py-1">
         {/* Dashboard */}
-        <li className="menu-item">
-          <Link to="/" className="menu-link">
+        <li className={`menu-item ${isActive('/admin') ? 'active' : ''}`}>
+          <Link to="/admin" className="menu-link">
             <i className="menu-icon tf-icons bx bx-home"></i>
-            <div className="text-truncate">Dashboard</div>
+            <div className="text-truncate" data-i18n="Dashboard">Dashboard</div>
           </Link>
         </li>
 
         {/* About */}
-        <li className="menu-item">
-          <Link to="/about" className="menu-link">
+        <li className={`menu-item ${isActive('/admin/about') ? 'active' : ''}`}>
+          <Link to="/admin/about" className="menu-link">
             <i className="menu-icon tf-icons bx bx-user"></i>
-            <div className="text-truncate">About</div>
+            <div className="text-truncate" data-i18n="About">About</div>
           </Link>
         </li>
 
-        {/* Resume */}
-        <li className="menu-item">
-          <div className="menu-link menu-toggle">
+        {/* Resume Section */}
+        <li className={`menu-item ${isOpen(['/admin/education', '/admin/experience']) ? 'active open' : ''}`}>
+          <a href="javascript:void(0);" className="menu-link menu-toggle">
             <i className="menu-icon tf-icons bx bx-file"></i>
-            <div className="text-truncate">Resume</div>
-          </div>
+            <div className="text-truncate" data-i18n="Resume">Resume</div>
+          </a>
           <ul className="menu-sub">
-            <li className="menu-item">
-              <Link to="/education" className="menu-link">
-                <div className="text-truncate">Education</div>
+            <li className={`menu-item ${isActive('/admin/education') ? 'active' : ''}`}>
+              <Link to="/admin/education" className="menu-link">
+                <div className="text-truncate" data-i18n="Education">Education</div>
               </Link>
             </li>
-            <li className="menu-item">
-              <Link to="/experience" className="menu-link">
-                <div className="text-truncate">Experience</div>
+            <li className={`menu-item ${isActive('/admin/experience') ? 'active' : ''}`}>
+              <Link to="/admin/experience" className="menu-link">
+                <div className="text-truncate" data-i18n="Experience">Experience</div>
               </Link>
             </li>
           </ul>
         </li>
 
-        {/* Portfolio */}
-        <li className="menu-item">
-          <div className="menu-link menu-toggle">
+        {/* Portfolio Section */}
+        <li className={`menu-item ${isOpen(['/admin/category', '/admin/projects', '/admin/project-images', '/admin/project-details']) ? 'active open' : ''}`}>
+          <a href="javascript:void(0);" className="menu-link menu-toggle">
             <i className="menu-icon tf-icons bx bx-briefcase"></i>
-            <div className="text-truncate">Portfolio</div>
-          </div>
+            <div className="text-truncate" data-i18n="Portfolio">Portfolio</div>
+          </a>
           <ul className="menu-sub">
-            <li className="menu-item">
-              <Link to="/portfolio-categories" className="menu-link">
-                <div className="text-truncate">Categories</div>
+            <li className={`menu-item ${isActive('/admin/category') ? 'active' : ''}`}>
+              <Link to="/admin/category" className="menu-link">
+                <div className="text-truncate" data-i18n="Categories">Categories</div>
               </Link>
             </li>
-            <li className="menu-item">
-              <Link to="/portfolio-projects" className="menu-link">
-                <div className="text-truncate">Projects</div>
+            <li className={`menu-item ${isActive('/admin/projects') ? 'active' : ''}`}>
+              <Link to="/admin/projects" className="menu-link">
+                <div className="text-truncate" data-i18n="Projects">Projects</div>
               </Link>
             </li>
-            <li className="menu-item">
-              <Link to="/portfolio-project-images" className="menu-link">
-                <div className="text-truncate">Project Images</div>
+            <li className={`menu-item ${isActive('/admin/project-images') ? 'active' : ''}`}>
+              <Link to="/admin/project-images" className="menu-link">
+                <div className="text-truncate" data-i18n="Project Images">Project Images</div>
               </Link>
             </li>
-            <li className="menu-item">
-              <Link to="/portfolio-project" className="menu-link">
-                <div className="text-truncate">Project</div>
+            <li className={`menu-item ${isActive('/admin/project-details') ? 'active' : ''}`}>
+              <Link to="/admin/project-details" className="menu-link">
+                <div className="text-truncate" data-i18n="Project">Project</div>
               </Link>
             </li>
           </ul>
         </li>
 
-        {/* Contact Us */}
-        <li className="menu-item">
-          <Link to="/contactus" className="menu-link">
+        {/* Contact */}
+        <li className={`menu-item ${isActive('/admin/contact-us') ? 'active' : ''}`}>
+          <Link to="/admin/contact-us" className="menu-link">
             <i className="menu-icon tf-icons bx bx-envelope"></i>
-            <div className="text-truncate">Contact Us</div>
+            <div className="text-truncate" data-i18n="Contact">Contact Us</div>
           </Link>
         </li>
       </ul>

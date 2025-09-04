@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AdminDashboard = () => {
+const ProjectImages = () => {
   const currentYear = new Date().getFullYear();
 
   return (
@@ -12,7 +12,7 @@ const AdminDashboard = () => {
             <div className="d-flex align-items-start row">
               <div className="col-sm-7">
                 <div className="card-body">
-                  <h5 className="card-title text-primary mb-3">Welcome to Admin Panel</h5>
+                  <h5 className="card-title text-primary mb-3">this is project images page</h5>
                 </div>
               </div>
             </div>
@@ -23,4 +23,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default ProjectImages;
