@@ -1,7 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import { getAbout, updateAbout } from "../../api/aboutApi";
 
 const About = () => {
-  const currentYear = new Date().getFullYear();
+  const [aboutData, setAboutData] = useState({
+    title: "",
+    description: "",
+    birthday: "",
+    age: "",
+    website: "",
+    degree: "",
+    phone: "",
+    email: "",
+    city: "",
+    freelance: false,
+    brief_description: "",
+    profile_photo: "",
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
+
+  // Fetch data
+  useEffect(() => {
+    getAbout()
+      .then((res) => {
+        const data = Array.isArray(res.data) ? res.data[0] : res.data;
+        setAboutData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "Something went wrong");
+        setLoading(false);
+      });
+  }, []);
+
+  // Handle input changes
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setAboutData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // Handle form submit
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setError(null);
+      setSuccess(null);
+      setValidationErrors({});
+
+      await updateAbout(aboutData.id, aboutData);
+      setSuccess("Profile updated successfully!");
+    } catch (err) {
+      if (err.errors) {
+        setValidationErrors(err.errors);
+      } else {
+        setError(err.message || "Update failed");
+      }
+    }
+  };
+
+
 
   return (
     <div className="content-wrapper">
@@ -11,122 +73,187 @@ const About = () => {
             <div className="card">
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h5 className="mb-0">Personal Profile Details</h5>
-                <small className="text-body float-end">With Icons</small>
               </div>
               <div className="card-body">
-                <form>
+                {success && <p className="text-success">{success}</p>}
+                {error && <p className="text-danger">{error}</p>}
+
+                <form onSubmit={handleSubmit}>
                   {/* Professional Title */}
                   <div className="mb-6">
                     <label className="form-label">Professional Title</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-briefcase"></i></span>
-                      <input type="text" className="form-control" placeholder="Full Stack Developer" />
-                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="title"
+                      value={aboutData.title || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.title && (
+                      <p className="text-danger">{validationErrors.title}</p>
+                    )}
                   </div>
 
                   {/* Description */}
                   <div className="mb-6">
                     <label className="form-label">Description</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-info-circle"></i></span>
-                      <textarea className="form-control" placeholder="Write a short description about yourself..."></textarea>
-                    </div>
+                    <textarea
+                      className="form-control"
+                      name="description"
+                      value={aboutData.description || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.description && (
+                      <p className="text-danger">{validationErrors.description}</p>
+                    )}
                   </div>
 
                   {/* Birthday */}
                   <div className="mb-6">
                     <label className="form-label">Birthday</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-calendar"></i></span>
-                      <input type="date" className="form-control" />
-                    </div>
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="birthday"
+                      value={aboutData.birthday?.split("T")[0] || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.birthday && (
+                      <p className="text-danger">{validationErrors.birthday}</p>
+                    )}
                   </div>
 
                   {/* Age */}
                   <div className="mb-6">
                     <label className="form-label">Age</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-user-circle"></i></span>
-                      <input type="number" className="form-control" placeholder="26" />
-                    </div>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="age"
+                      value={aboutData.age || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.age && (
+                      <p className="text-danger">{validationErrors.age}</p>
+                    )}
                   </div>
 
                   {/* Website */}
                   <div className="mb-6">
                     <label className="form-label">Website</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-globe"></i></span>
-                      <input type="url" className="form-control" placeholder="https://yourwebsite.com" />
-                    </div>
+                    <input
+                      type="url"
+                      className="form-control"
+                      name="website"
+                      value={aboutData.website || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.website && (
+                      <p className="text-danger">{validationErrors.website}</p>
+                    )}
                   </div>
 
                   {/* Degree */}
                   <div className="mb-6">
                     <label className="form-label">Degree</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-book"></i></span>
-                      <input type="text" className="form-control" placeholder="B.Tech in Computer Science" />
-                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="degree"
+                      value={aboutData.degree || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.degree && (
+                      <p className="text-danger">{validationErrors.degree}</p>
+                    )}
                   </div>
 
                   {/* Phone */}
                   <div className="mb-6">
                     <label className="form-label">Phone</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-phone"></i></span>
-                      <input type="text" className="form-control" placeholder="+91 98765 43210" />
-                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="phone"
+                      value={aboutData.phone || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.phone && (
+                      <p className="text-danger">{validationErrors.phone}</p>
+                    )}
                   </div>
 
                   {/* Email */}
                   <div className="mb-6">
                     <label className="form-label">Email</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-envelope"></i></span>
-                      <input type="email" className="form-control" placeholder="yourname@example.com" />
-                    </div>
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email"
+                      value={aboutData.email || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.email && (
+                      <p className="text-danger">{validationErrors.email}</p>
+                    )}
                   </div>
 
                   {/* City */}
                   <div className="mb-6">
                     <label className="form-label">City</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-map"></i></span>
-                      <input type="text" className="form-control" placeholder="Mumbai" />
-                    </div>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="city"
+                      value={aboutData.city || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.city && (
+                      <p className="text-danger">{validationErrors.city}</p>
+                    )}
                   </div>
 
-                  {/* Freelance Availability */}
+                  {/* Freelance */}
                   <div className="mb-6">
-                    <label className="form-label">Freelance Availability</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-briefcase-alt-2"></i></span>
-                      <select className="form-control">
-                        <option value="available">Available</option>
-                        <option value="not_available">Not Available</option>
-                      </select>
-                    </div>
+                    <label className="form-label">Freelance</label>
+                    <select
+                      className="form-control"
+                      name="freelance"
+                      value={aboutData.freelance ? "true" : "false"}
+                      onChange={(e) =>
+                        setAboutData((prev) => ({
+                          ...prev,
+                          freelance: e.target.value === "true",
+                        }))
+                      }
+                    >
+                      <option value="true">Available</option>
+                      <option value="false">Not Available</option>
+                    </select>
+                    {validationErrors.freelance && (
+                      <p className="text-danger">{validationErrors.freelance}</p>
+                    )}
                   </div>
 
                   {/* Brief Description */}
                   <div className="mb-6">
                     <label className="form-label">Brief Description</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-comment"></i></span>
-                      <textarea className="form-control" placeholder="A highly motivated web developer..."></textarea>
-                    </div>
+                    <textarea
+                      className="form-control"
+                      name="brief_description"
+                      value={aboutData.brief_description || ""}
+                      onChange={handleChange}
+                    />
+                    {validationErrors.brief_description && (
+                      <p className="text-danger">
+                        {validationErrors.brief_description}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Profile Photo */}
-                  <div className="mb-6">
-                    <label className="form-label">Profile Photo</label>
-                    <div className="input-group input-group-merge">
-                      <span className="input-group-text"><i className="icon-base bx bx-image"></i></span>
-                      <input type="file" className="form-control" accept="image/*" />
-                    </div>
-                  </div>
-
-                  <button type="submit" className="btn btn-primary">Submit</button>
+                  <button type="submit" className="btn btn-primary">
+                    Save Changes
+                  </button>
                 </form>
               </div>
             </div>

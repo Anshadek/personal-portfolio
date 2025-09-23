@@ -1,0 +1,353 @@
+.
+├── adminpanelhtml
+│   ├── assets
+│   │   ├── css
+│   │   │   └── demo.css
+│   │   ├── img
+│   │   │   ├── avatars
+│   │   │   │   ├── 1.png
+│   │   │   │   ├── 2.png
+│   │   │   │   ├── 3.png
+│   │   │   │   └── 4.png
+│   │   │   ├── backgrounds
+│   │   │   │   └── 1.jpg
+│   │   │   ├── elements
+│   │   │   │   ├── 10.png
+│   │   │   │   ├── 11.png
+│   │   │   │   ├── 12.png
+│   │   │   │   ├── 13.png
+│   │   │   │   ├── 14.png
+│   │   │   │   ├── 15.png
+│   │   │   │   ├── 16.png
+│   │   │   │   ├── 17.png
+│   │   │   │   ├── 18.png
+│   │   │   │   ├── 19.png
+│   │   │   │   ├── 1.png
+│   │   │   │   ├── 2.png
+│   │   │   │   ├── 3.png
+│   │   │   │   ├── 4.png
+│   │   │   │   ├── 5.png
+│   │   │   │   ├── 6.png
+│   │   │   │   ├── 7.png
+│   │   │   │   ├── 8.png
+│   │   │   │   └── 9.png
+│   │   │   ├── favicon
+│   │   │   │   └── favicon.ico
+│   │   │   ├── icons
+│   │   │   │   ├── brands
+│   │   │   │   │   ├── asana.png
+│   │   │   │   │   ├── behance.png
+│   │   │   │   │   ├── dribbble.png
+│   │   │   │   │   ├── facebook.png
+│   │   │   │   │   ├── github.png
+│   │   │   │   │   ├── google.png
+│   │   │   │   │   ├── instagram.png
+│   │   │   │   │   ├── mailchimp.png
+│   │   │   │   │   ├── slack.png
+│   │   │   │   │   └── twitter.png
+│   │   │   │   └── unicons
+│   │   │   │       ├── cc-primary.png
+│   │   │   │       ├── cc-warning.png
+│   │   │   │       ├── chart.png
+│   │   │   │       ├── chart-success.png
+│   │   │   │       ├── paypal.png
+│   │   │   │       ├── wallet-info.png
+│   │   │   │       └── wallet.png
+│   │   │   ├── illustrations
+│   │   │   │   ├── girl-doing-yoga-light.png
+│   │   │   │   ├── man-with-laptop.png
+│   │   │   │   └── page-misc-error-light.png
+│   │   │   └── layouts
+│   │   │       ├── layout-container-light.png
+│   │   │       ├── layout-fluid-light.png
+│   │   │       ├── layout-without-menu-light.png
+│   │   │       └── layout-without-navbar-light.png
+│   │   ├── js
+│   │   │   ├── config.js
+│   │   │   ├── dashboards-analytics.js
+│   │   │   ├── extended-ui-perfect-scrollbar.js
+│   │   │   ├── form-basic-inputs.js
+│   │   │   ├── main.js
+│   │   │   ├── pages-account-settings-account.js
+│   │   │   ├── ui-modals.js
+│   │   │   ├── ui-popover.js
+│   │   │   └── ui-toasts.js
+│   │   └── vendor
+│   │       ├── css
+│   │       │   ├── core.css
+│   │       │   └── pages
+│   │       │       ├── page-auth.css
+│   │       │       ├── page-icons.css
+│   │       │       └── page-misc.css
+│   │       ├── fonts
+│   │       │   └── iconify-icons.css
+│   │       ├── js
+│   │       │   ├── bootstrap.js
+│   │       │   ├── helpers.js
+│   │       │   └── menu.js
+│   │       └── libs
+│   │           ├── apex-charts
+│   │           │   ├── apex-charts.css
+│   │           │   └── apexcharts.js
+│   │           ├── highlight
+│   │           │   ├── highlight.css
+│   │           │   ├── highlight-github.css
+│   │           │   └── highlight.js
+│   │           ├── jquery
+│   │           │   └── jquery.js
+│   │           ├── masonry
+│   │           │   └── masonry.js
+│   │           ├── perfect-scrollbar
+│   │           │   ├── perfect-scrollbar.css
+│   │           │   └── perfect-scrollbar.js
+│   │           └── popper
+│   │               └── popper.js
+│   ├── build-config.js
+│   ├── CHANGELOG.md
+│   ├── documentation.html
+│   ├── fonts
+│   │   └── iconify
+│   │       └── iconify.js
+│   ├── gulpfile.js
+│   ├── hire-us.html
+│   ├── html
+│   │   ├── auth-forgot-password-basic.html
+│   │   ├── auth-login-basic.html
+│   │   ├── auth-register-basic.html
+│   │   ├── cards-basic.html
+│   │   ├── extended-ui-perfect-scrollbar.html
+│   │   ├── extended-ui-text-divider.html
+│   │   ├── form-layouts-horizontal.html
+│   │   ├── form-layouts-vertical.html
+│   │   ├── forms-basic-inputs.html
+│   │   ├── forms-input-groups.html
+│   │   ├── icons-boxicons.html
+│   │   ├── index.html
+│   │   ├── layouts-blank.html
+│   │   ├── layouts-container.html
+│   │   ├── layouts-fluid.html
+│   │   ├── layouts-without-menu.html
+│   │   ├── layouts-without-navbar.html
+│   │   ├── pages-account-settings-account.html
+│   │   ├── pages-account-settings-connections.html
+│   │   ├── pages-account-settings-notifications.html
+│   │   ├── pages-misc-error.html
+│   │   ├── pages-misc-under-maintenance.html
+│   │   ├── porfolio-admin
+│   │   │   ├── about.html
+│   │   │   ├── auth-login-basic.html
+│   │   │   ├── contactus.html
+│   │   │   ├── education.html
+│   │   │   ├── experience.html
+│   │   │   ├── index.html
+│   │   │   ├── portfolio-categories.html
+│   │   │   ├── portfolio-projectImages.html
+│   │   │   └── portfolio-projects.html
+│   │   ├── tables-basic.html
+│   │   ├── ui-accordion.html
+│   │   ├── ui-alerts.html
+│   │   ├── ui-badges.html
+│   │   ├── ui-buttons.html
+│   │   ├── ui-carousel.html
+│   │   ├── ui-collapse.html
+│   │   ├── ui-dropdowns.html
+│   │   ├── ui-footer.html
+│   │   ├── ui-list-groups.html
+│   │   ├── ui-modals.html
+│   │   ├── ui-navbar.html
+│   │   ├── ui-offcanvas.html
+│   │   ├── ui-pagination-breadcrumbs.html
+│   │   ├── ui-progress.html
+│   │   ├── ui-spinners.html
+│   │   ├── ui-tabs-pills.html
+│   │   ├── ui-toasts.html
+│   │   ├── ui-tooltips-popovers.html
+│   │   └── ui-typography.html
+│   ├── index.html
+│   ├── js
+│   │   ├── bootstrap.js
+│   │   ├── helpers.js
+│   │   └── menu.js
+│   ├── libs
+│   │   ├── apex-charts
+│   │   │   ├── apexcharts.js
+│   │   │   └── apex-charts.scss
+│   │   ├── highlight
+│   │   │   ├── highlight-github.scss
+│   │   │   ├── highlight.js
+│   │   │   └── highlight.scss
+│   │   ├── jquery
+│   │   │   └── jquery.js
+│   │   ├── masonry
+│   │   │   └── masonry.js
+│   │   ├── perfect-scrollbar
+│   │   │   ├── perfect-scrollbar.js
+│   │   │   └── perfect-scrollbar.scss
+│   │   └── popper
+│   │       └── popper.js
+│   ├── LICENSE
+│   ├── LICENSE.md
+│   ├── package.json
+│   ├── README.md
+│   ├── scss
+│   │   ├── _bootstrap-extended
+│   │   │   ├── _accordion.scss
+│   │   │   ├── _alert.scss
+│   │   │   ├── _badge.scss
+│   │   │   ├── _breadcrumb.scss
+│   │   │   ├── _button-group.scss
+│   │   │   ├── _buttons.scss
+│   │   │   ├── _card.scss
+│   │   │   ├── _carousel.scss
+│   │   │   ├── _dropdown.scss
+│   │   │   ├── forms
+│   │   │   │   ├── _floating-labels.scss
+│   │   │   │   ├── _form-check.scss
+│   │   │   │   ├── _form-control.scss
+│   │   │   │   ├── _form-range.scss
+│   │   │   │   ├── _form-select.scss
+│   │   │   │   ├── _input-group.scss
+│   │   │   │   └── _labels.scss
+│   │   │   ├── _forms.scss
+│   │   │   ├── _functions.scss
+│   │   │   ├── helpers
+│   │   │   │   └── _color-bg.scss
+│   │   │   ├── _helpers.scss
+│   │   │   ├── _include.scss
+│   │   │   ├── _list-group.scss
+│   │   │   ├── mixins
+│   │   │   │   ├── _border-radius.scss
+│   │   │   │   ├── _caret.scss
+│   │   │   │   └── _misc.scss
+│   │   │   ├── _mixins.scss
+│   │   │   ├── _modal.scss
+│   │   │   ├── _navbar.scss
+│   │   │   ├── _nav.scss
+│   │   │   ├── _offcanvas.scss
+│   │   │   ├── _pagination.scss
+│   │   │   ├── _popover.scss
+│   │   │   ├── _progress.scss
+│   │   │   ├── _reboot.scss
+│   │   │   ├── _root.scss
+│   │   │   ├── _spinners.scss
+│   │   │   ├── _tables.scss
+│   │   │   ├── _toasts.scss
+│   │   │   ├── _tooltip.scss
+│   │   │   ├── _type.scss
+│   │   │   ├── _utilities.scss
+│   │   │   └── _variables.scss
+│   │   ├── _bootstrap-extended.scss
+│   │   ├── _bootstrap.scss
+│   │   ├── _colors.scss
+│   │   ├── _components
+│   │   │   ├── _app-brand.scss
+│   │   │   ├── _avatar.scss
+│   │   │   ├── _base.scss
+│   │   │   ├── _common.scss
+│   │   │   ├── _footer.scss
+│   │   │   ├── _include.scss
+│   │   │   ├── _layout.scss
+│   │   │   ├── _menu.scss
+│   │   │   ├── _root.scss
+│   │   │   ├── _text-divider.scss
+│   │   │   └── _variables.scss
+│   │   ├── _components.scss
+│   │   ├── core.scss
+│   │   ├── _custom-styles.scss
+│   │   ├── _custom-variables
+│   │   │   ├── _bootstrap-extended.scss
+│   │   │   └── _components.scss
+│   │   └── pages
+│   │       ├── page-auth.scss
+│   │       ├── page-icons.scss
+│   │       └── page-misc.scss
+│   ├── tasks
+│   │   ├── build.js
+│   │   └── prod.js
+│   ├── webpack.config.js
+│   └── yarn.lock
+├── adminpanelhtml.zip
+├── eslint.config.js
+├── index.html
+├── README.md
+├── src
+│   ├── App.css
+│   ├── App.jsx
+│   ├── assets
+│   │   ├── admin
+│   │   │   ├── css
+│   │   │   ├── js
+│   │   │   └── vendor
+│   │   │       ├── css
+│   │   │       │   └── pages
+│   │   │       ├── fonts
+│   │   │       ├── js
+│   │   │       └── libs
+│   │   │           ├── apex-charts
+│   │   │           ├── highlight
+│   │   │           ├── jquery
+│   │   │           ├── masonry
+│   │   │           ├── perfect-scrollbar
+│   │   │           └── popper
+│   │   ├── js
+│   │   ├── react.svg
+│   │   ├── scss
+│   │   ├── styles
+│   │   └── vendor
+│   │       ├── aos
+│   │       ├── bootstrap
+│   │       │   ├── css
+│   │       │   └── js
+│   │       ├── bootstrap-icons
+│   │       │   └── fonts
+│   │       ├── glightbox
+│   │       │   ├── css
+│   │       │   └── js
+│   │       ├── imagesloaded
+│   │       ├── isotope-layout
+│   │       ├── php-email-form
+│   │       ├── purecounter
+│   │       ├── swiper
+│   │       ├── typed.js
+│   │       └── waypoints
+│   ├── components
+│   │   ├── admin
+│   │   │   ├── About.jsx
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── AdminFooter.jsx
+│   │   │   ├── AdminHeader.jsx
+│   │   │   ├── AdminSidebar.jsx
+│   │   │   ├── backup.html
+│   │   │   ├── Category.jsx
+│   │   │   ├── ContactUs.jsx
+│   │   │   ├── Education.jsx
+│   │   │   ├── Experince.jsx
+│   │   │   ├── ProjectDetails.jsx
+│   │   │   ├── ProjectImages.jsx
+│   │   │   └── Projects.jsx
+│   │   └── user
+│   │       ├── About.jsx
+│   │       ├── Contact.jsx
+│   │       ├── Footer.jsx
+│   │       ├── Hero.jsx
+│   │       ├── Portfolio.jsx
+│   │       ├── Resume.jsx
+│   │       ├── Services.jsx
+│   │       ├── Sidebar.jsx
+│   │       ├── Skills.jsx
+│   │       ├── Stats.jsx
+│   │       ├── Testimonials.jsx
+│   │       └── UserExtras.jsx
+│   ├── hooks
+│   │   ├── useAdminScripts.js
+│   │   └── useVendorScripts.js
+│   ├── index.css
+│   ├── layouts
+│   │   ├── AdminLayout.jsx
+│   │   └── UserLayout.jsx
+│   ├── main.jsx
+│   └── pages
+├── structure.txt
+└── vite.config.js
+
+541 directories, 3149 files
