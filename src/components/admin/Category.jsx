@@ -1,7 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
+import {
+  getCategory,
+  createCategory,
+  updateCategory,
+  deleteCategory,
+} from "../../api/categoryApi"; // adjust path if needed
 
 const Category = () => {
-  const currentYear = new Date().getFullYear();
+  const [categories, setCategories] = useState([]);
+  const [formData, setFormData] = useState({ id: null, name: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  // fetch categories
+  const fetchCategories = () => {
+    setLoading(true);
+    getCategory()
+      .then((res) => {
+        setCategories(Array.isArray(res.data) ? res.data : []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message || "Failed to load categories");
+        setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // handle input changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // handle save (create or update)
+  const handleSave = () => {
+    const action = formData.id
+      ? updateCategory(formData.id, { name: formData.name })
+      : createCategory({ name: formData.name });
+
+    action
+    .then(() => {
+      setSuccess(formData.id ? "Category updated!" : "Category created!");
+      setFormData({ id: null, name: "" });
+      fetchCategories();
+    
+      const modalEl = document.getElementById("categoryModal");
+      const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+      modal.hide();
+    
+      // Cleanup any leftover backdrop
+      document.body.classList.remove("modal-open");
+      document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+    })
+      .catch((err) => setError(err.message || "Failed to save category"));
+  };
+
+  // handle edit
+  const handleEdit = (cat) => {
+    setFormData({ id: cat.id, name: cat.name });
+    new window.bootstrap.Modal(document.getElementById("categoryModal")).show();
+  };
+
+  // handle delete
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this category?")) {
+      deleteCategory(id)
+        .then(() => {
+          setSuccess("Category deleted!");
+          fetchCategories();
+        })
+        .catch((err) => setError(err.message || "Failed to delete category"));
+    }
+  };
 
   return (
     <div className="container-xxl flex-grow-1 container-p-y">
@@ -12,6 +86,7 @@ const Category = () => {
           <button
             type="button"
             className="btn btn-primary"
+            onClick={() => setFormData({ id: null, name: "" })}
             data-bs-toggle="modal"
             data-bs-target="#categoryModal"
           >
@@ -19,70 +94,43 @@ const Category = () => {
           </button>
         </div>
         <div className="table-responsive text-nowrap">
-          <table className="table">
-            <thead>
-              <tr>
-                <th>SI No.</th> {/* New Serial Number Column */}
-                <th>Category Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody className="table-border-bottom-0">
-              <tr>
-                <td>1</td>
-                <td>Electronics</td>
-                <td>
-                  <span className="badge bg-label-success">Active</span>
-                </td>
-                <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="icon-base bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="javascript:void(0);">
-                        <i className="icon-base bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="javascript:void(0);">
-                        <i className="icon-base bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Clothing</td>
-                <td>
-                  <span className="badge bg-label-warning">Inactive</span>
-                </td>
-                <td>
-                  <div className="dropdown">
-                    <button
-                      type="button"
-                      className="btn p-0 dropdown-toggle hide-arrow"
-                      data-bs-toggle="dropdown"
-                    >
-                      <i className="icon-base bx bx-dots-vertical-rounded"></i>
-                    </button>
-                    <div className="dropdown-menu">
-                      <a className="dropdown-item" href="javascript:void(0);">
-                        <i className="icon-base bx bx-edit-alt me-1"></i> Edit
-                      </a>
-                      <a className="dropdown-item" href="javascript:void(0);">
-                        <i className="icon-base bx bx-trash me-1"></i> Delete
-                      </a>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {loading ? (
+            <p className="p-3">Loading...</p>
+          ) : (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>SI No.</th>
+                  <th>Category Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody className="table-border-bottom-0">
+                {categories.length > 0 ? (
+                  categories.map((cat, index) => (
+                    <tr key={cat.id}>
+                      <td>{index + 1}</td>
+                      <td>{cat.name}</td>
+                      <td>
+                      <button
+                              className="btn btn-danger"
+                              onClick={() => handleDelete(cat.id)}
+                            >
+                              <i className="icon-base bx bx-trash me-1"></i> 
+                            </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="4" className="text-center p-3">
+                      No categories found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
 
@@ -96,7 +144,9 @@ const Category = () => {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Add / Edit Category</h5>
+              <h5 className="modal-title">
+                {formData.id ? "Edit Category" : "Add Category"}
+              </h5>
               <button
                 type="button"
                 className="btn-close"
@@ -106,27 +156,32 @@ const Category = () => {
             </div>
             <div className="modal-body">
               <div className="mb-3">
-                <label htmlFor="categoryName" className="form-label">
+                <label htmlFor="name" className="form-label">
                   Category Name
                 </label>
                 <input
                   type="text"
-                  id="categoryName"
+                  id="name"
                   className="form-control"
+                  value={formData.name}
+                  onChange={handleChange}
                   placeholder="Enter category name"
                 />
               </div>
-              <div className="mb-3">
-                <label htmlFor="categoryStatus" className="form-label">
+              {/* <div className="mb-3">
+                <label htmlFor="status" className="form-label">
                   Status
                 </label>
-                <select id="categoryStatus" className="form-control">
-                  <option value="active" defaultValue>
-                    Active
-                  </option>
+                <select
+                  id="status"
+                  className="form-control"
+                  value={formData.status}
+                  onChange={handleChange}
+                >
+                  <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
-              </div>
+              </div> */}
             </div>
             <div className="modal-footer">
               <button
@@ -136,13 +191,16 @@ const Category = () => {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
+              <button type="button" className="btn btn-primary" onClick={handleSave}>
                 Save
               </button>
             </div>
           </div>
         </div>
       </div>
+
+      {error && <p className="text-danger mt-2">{error}</p>}
+      {success && <p className="text-success mt-2">{success}</p>}
     </div>
   );
 };

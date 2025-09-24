@@ -1,13 +1,120 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import {
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "../../api/projectApi";
+import { getCategory } from "../../api/categoryApi"; // <-- reuse from category
+import { toast } from "react-toastify"; // optional notification
 
 const ProjectDetails = () => {
-  const currentYear = new Date().getFullYear();
+  const [projects, setProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [formData, setFormData] = useState({
+    id: null,
+    title: "",
+    category_id: "",
+    client: "",
+    project_date: "",
+    project_url: "",
+    description: "",
+  });
+
+  // Fetch projects & categories
+  const fetchProjects = async () => {
+    try {
+      const res = await getProject();
+      setProjects(res.data || []);
+    } catch (err) {
+      console.error("Error fetching projects", err);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const res = await getCategory();
+      setCategories(res.data || []);
+    } catch (err) {
+      console.error("Error fetching categories", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+    fetchCategories();
+  }, []);
+
+  // Handle input change
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  // Save / Update
+  const handleSave = () => {
+    const apiCall = formData.id
+      ? updateProject(formData.id, formData)
+      : createProject(formData);
+
+    apiCall
+      .then(() => {
+        toast.success(formData.id ? "Project updated!" : "Project created!");
+        setFormData({
+          id: null,
+          title: "",
+          category_id: "",
+          client: "",
+          project_date: "",
+          project_url: "",
+          description: "",
+        });
+        fetchProjects();
+
+        // Close modal
+        const modalEl = document.getElementById("projectModal");
+        const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+        document.body.classList.remove("modal-open");
+        document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
+      })
+      .catch((err) => {
+        console.error("Error saving project", err);
+        toast.error("Failed to save project");
+      });
+  };
+
+  // Edit project
+  const handleEdit = (project) => {
+    setFormData({
+      id: project.id,
+      title: project.title,
+      category_id: project.category_id,
+      client: project.client,
+      project_date: project.project_date,
+      project_url: project.project_url,
+      description: project.description,
+    });
+    const modalEl = document.getElementById("projectModal");
+    window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+  };
+
+  // Delete project
+  const handleDelete = (id) => {
+    if (!window.confirm("Are you sure you want to delete this project?")) return;
+    deleteProject(id)
+      .then(() => {
+        toast.success("Project deleted!");
+        fetchProjects();
+      })
+      .catch((err) => {
+        console.error("Error deleting project", err);
+        toast.error("Failed to delete project");
+      });
+  };
 
   return (
     <div className="content-wrapper">
-      {/* Content */}
       <div className="container-xxl flex-grow-1 container-p-y">
-        {/* Project Table */}
         <div className="card">
           <div className="card-header d-flex justify-content-between align-items-center">
             <h5 className="card-title">Project List</h5>
@@ -16,6 +123,17 @@ const ProjectDetails = () => {
               className="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#projectModal"
+              onClick={() =>
+                setFormData({
+                  id: null,
+                  title: "",
+                  category_id: "",
+                  client: "",
+                  project_date: "",
+                  project_url: "",
+                  description: "",
+                })
+              }
             >
               Add Project
             </button>
@@ -35,39 +153,66 @@ const ProjectDetails = () => {
                 </tr>
               </thead>
               <tbody className="table-border-bottom-0">
-                <tr>
-                  <td>1</td>
-                  <td>Landing Page Redesign</td>
-                  <td>Web Design</td>
-                  <td>Acme Inc.</td>
-                  <td>2025-07-01</td>
-                  <td>
-                    <a href="https://example.com" target="_blank" rel="noreferrer">
-                      Visit
-                    </a>
-                  </td>
-                  <td>Redesigned homepage and improved UX.</td>
-                  <td>
-                    <div className="dropdown">
-                      <button
-                        type="button"
-                        className="btn p-0 dropdown-toggle hide-arrow"
-                        data-bs-toggle="dropdown"
-                      >
-                        <i className="icon-base bx bx-dots-vertical-rounded"></i>
-                      </button>
-                      <div className="dropdown-menu">
-                        <a className="dropdown-item" href="#">
-                          <i className="icon-base bx bx-edit-alt me-1"></i> Edit
-                        </a>
-                        <a className="dropdown-item" href="#">
-                          <i className="icon-base bx bx-trash me-1"></i> Delete
-                        </a>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-                {/* Add more rows dynamically */}
+                {projects.length > 0 ? (
+                  projects.map((project, index) => (
+                    <tr key={project.id}>
+                      <td>{index + 1}</td>
+                      <td>{project.title}</td>
+                      <td>
+                        {
+                          categories.find(
+                            (cat) => cat.id === project.category_id
+                          )?.name
+                        }
+                      </td>
+                      <td>{project.client}</td>
+                      <td>{project.project_date}</td>
+                      <td>
+                        {project.project_url && (
+                          <a
+                            href={project.project_url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Visit
+                          </a>
+                        )}
+                      </td>
+                      <td>{project.description}</td>
+                      <td>
+                        <div className="dropdown">
+                          <button
+                            type="button"
+                            className="btn p-0 dropdown-toggle hide-arrow"
+                            data-bs-toggle="dropdown"
+                          >
+                            <i className="icon-base bx bx-dots-vertical-rounded"></i>
+                          </button>
+                          <div className="dropdown-menu">
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleEdit(project)}
+                            >
+                              <i className="icon-base bx bx-edit-alt me-1"></i> Edit
+                            </button>
+                            <button
+                              className="dropdown-item"
+                              onClick={() => handleDelete(project.id)}
+                            >
+                              <i className="icon-base bx bx-trash me-1"></i> Delete
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" className="text-center">
+                      No projects found.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
@@ -83,7 +228,9 @@ const ProjectDetails = () => {
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Add / Edit Project</h5>
+                <h5 className="modal-title">
+                  {formData.id ? "Edit Project" : "Add Project"}
+                </h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -98,8 +245,10 @@ const ProjectDetails = () => {
                   </label>
                   <input
                     type="text"
-                    id="projectTitle"
+                    id="title"
                     className="form-control"
+                    value={formData.title}
+                    onChange={handleChange}
                     placeholder="Enter title"
                   />
                 </div>
@@ -107,12 +256,18 @@ const ProjectDetails = () => {
                   <label htmlFor="projectCategory" className="form-label">
                     Category
                   </label>
-                  <select id="projectCategory" className="form-control">
+                  <select
+                    id="category_id"
+                    className="form-control"
+                    value={formData.category_id}
+                    onChange={handleChange}
+                  >
                     <option value="">-- Select Category --</option>
-                    <option value="Web Design">Web Design</option>
-                    <option value="Mobile App">Mobile App</option>
-                    <option value="UI/UX">UI/UX</option>
-                    <option value="Branding">Branding</option>
+                    {categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="mb-3">
@@ -121,8 +276,10 @@ const ProjectDetails = () => {
                   </label>
                   <input
                     type="text"
-                    id="projectClient"
+                    id="client"
                     className="form-control"
+                    value={formData.client}
+                    onChange={handleChange}
                     placeholder="Enter client name"
                   />
                 </div>
@@ -130,7 +287,13 @@ const ProjectDetails = () => {
                   <label htmlFor="projectDate" className="form-label">
                     Project Date
                   </label>
-                  <input type="date" id="projectDate" className="form-control" />
+                  <input
+                    type="date"
+                    id="project_date"
+                    className="form-control"
+                    value={formData.project_date}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="mb-3">
                   <label htmlFor="projectUrl" className="form-label">
@@ -138,8 +301,10 @@ const ProjectDetails = () => {
                   </label>
                   <input
                     type="url"
-                    id="projectUrl"
+                    id="project_url"
                     className="form-control"
+                    value={formData.project_url}
+                    onChange={handleChange}
                     placeholder="Enter URL"
                   />
                 </div>
@@ -148,8 +313,10 @@ const ProjectDetails = () => {
                     Description
                   </label>
                   <textarea
-                    id="projectDesc"
+                    id="description"
                     className="form-control"
+                    value={formData.description}
+                    onChange={handleChange}
                     placeholder="Enter description"
                     rows="3"
                   ></textarea>
@@ -163,7 +330,7 @@ const ProjectDetails = () => {
                 >
                   Close
                 </button>
-                <button type="button" className="btn btn-primary">
+                <button type="button" className="btn btn-primary" onClick={handleSave}>
                   Save
                 </button>
               </div>
