@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 import {
   getProjectImage,
   createProjectImage,
@@ -17,6 +18,7 @@ const ProjectImages = () => {
     project_id: "",
   });
   const [previewImage, setPreviewImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null); // ✅ keep file in state
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch images
@@ -54,8 +56,10 @@ const ProjectImages = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setPreviewImage(URL.createObjectURL(file)); // For preview only
+      setSelectedFile(file); // ✅ save file in state
+      setPreviewImage(URL.createObjectURL(file)); // for preview
     } else {
+      setSelectedFile(null);
       setPreviewImage(null);
     }
   };
@@ -66,9 +70,6 @@ const ProjectImages = () => {
     setIsSubmitting(true);
 
     try {
-      const fileInput = document.getElementById("image_file");
-      const selectedFile = fileInput?.files[0];
-
       // Validation
       if (!formData.image_title.trim()) {
         alert("Please enter an image title");
@@ -87,17 +88,14 @@ const ProjectImages = () => {
       }
 
       const fd = new FormData();
-      if (selectedFile) fd.append("image_path", selectedFile); // ✅ correct File object
+      if (selectedFile) fd.append("image_path", selectedFile); // ✅ correct file object
       fd.append("image_title", formData.image_title);
       fd.append("image_description", formData.image_description || "");
       fd.append("project_id", formData.project_id);
 
+      // Debugging
       for (let [key, value] of fd.entries()) {
-        if (value instanceof File) {
-          console.log(`${key}: File(name=${value.name}, type=${value.type}, size=${value.size})`);
-        } else {
-          console.log(`${key}: ${value}`);
-        }
+        console.log(key, value);
       }
 
       if (formData.id) {
@@ -116,7 +114,7 @@ const ProjectImages = () => {
         project_id: "",
       });
       setPreviewImage(null);
-      fileInput.value = "";
+      setSelectedFile(null);
 
       fetchImages();
 
@@ -142,10 +140,7 @@ const ProjectImages = () => {
     });
 
     setPreviewImage(img.image_path ? `http://localhost:5000${img.image_path}` : null);
-
-    // Clear file input
-    const fileInput = document.getElementById("image_file");
-    if (fileInput) fileInput.value = "";
+    setSelectedFile(null); // reset file
 
     new window.bootstrap.Modal(document.getElementById("imageModal")).show();
   };
@@ -172,9 +167,7 @@ const ProjectImages = () => {
       project_id: "",
     });
     setPreviewImage(null);
-
-    const fileInput = document.getElementById("image_file");
-    if (fileInput) fileInput.value = "";
+    setSelectedFile(null);
 
     new window.bootstrap.Modal(document.getElementById("imageModal")).show();
   };
@@ -209,33 +202,23 @@ const ProjectImages = () => {
                     <td>
                       {img.image_path && (
                         <img
-                          src={`http://localhost:5000${img.image_path}`}
-                          alt={img.image_title}
-                          style={{ width: "80px", height: "auto" }}
-                        />
+                        src={`${img.image_path}`}
+                        alt={img.image_title || "Project Image"}
+                        width={120}
+                        height={100}
+                      />
                       )}
                     </td>
                     <td>{img.image_title}</td>
                     <td>{img.image_description}</td>
                     <td>{img.project?.title || "—"}</td>
                     <td>
-                      <div className="dropdown">
-                        <button
-                          type="button"
-                          className="btn p-0 dropdown-toggle hide-arrow"
-                          data-bs-toggle="dropdown"
-                        >
-                          <i className="icon-base bx bx-dots-vertical-rounded"></i>
-                        </button>
-                        <div className="dropdown-menu">
-                          <button className="dropdown-item" onClick={() => handleEdit(img)}>
+                    <button className="dropdown-item" onClick={() => handleEdit(img)}>
                             <i className="icon-base bx bx-edit-alt me-1"></i> Edit
                           </button>
                           <button className="dropdown-item" onClick={() => handleDelete(img.id)}>
                             <i className="icon-base bx bx-trash me-1"></i> Delete
                           </button>
-                        </div>
-                      </div>
                     </td>
                   </tr>
                 ))

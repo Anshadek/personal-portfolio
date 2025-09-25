@@ -14,19 +14,26 @@ const About = () => {
     city: "",
     freelance: false,
     brief_description: "",
-    profile_photo: "",
+    profile_photo: null,
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const [previewPhoto, setPreviewPhoto] = useState(null);
 
   // Fetch data
   useEffect(() => {
     getAbout()
       .then((res) => {
         const data = Array.isArray(res.data) ? res.data[0] : res.data;
-        setAboutData(data);
+        setAboutData({
+          ...data,
+          profile_photo: data.profile_photo || null,
+        });
+        if (data.profile_photo) {
+          setPreviewPhoto(`http://localhost:5000/uploads/profile_photos/${data.profile_photo}`);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -44,6 +51,15 @@ const About = () => {
     }));
   };
 
+  // Handle file change
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAboutData((prev) => ({ ...prev, profile_photo: file }));
+      setPreviewPhoto(URL.createObjectURL(file));
+    }
+  };
+
   // Handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,7 +68,17 @@ const About = () => {
       setSuccess(null);
       setValidationErrors({});
 
-      await updateAbout(aboutData.id, aboutData);
+      const formData = new FormData();
+      for (let key in aboutData) {
+        if (aboutData[key] !== null) {
+          formData.append(key, aboutData[key]);
+        }
+      }
+
+      await updateAbout(aboutData.id, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
       setSuccess("Profile updated successfully!");
     } catch (err) {
       if (err.errors) {
@@ -62,8 +88,6 @@ const About = () => {
       }
     }
   };
-
-
 
   return (
     <div className="content-wrapper">
@@ -78,9 +102,30 @@ const About = () => {
                 {success && <p className="text-success">{success}</p>}
                 {error && <p className="text-danger">{error}</p>}
 
-                <form onSubmit={handleSubmit}>
-                  {/* Professional Title */}
-                  <div className="mb-6">
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                  {/* Profile Photo */}
+                  <div className="mb-3">
+                    <label className="form-label">Profile Photo</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
+                    {previewPhoto && (
+                      <img
+                        src={previewPhoto}
+                        alt="Profile Preview"
+                        style={{ width: 120, marginTop: 10, borderRadius: "50%" }}
+                      />
+                    )}
+                    {validationErrors.profile_photo && (
+                      <p className="text-danger">{validationErrors.profile_photo}</p>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <div className="mb-3">
                     <label className="form-label">Professional Title</label>
                     <input
                       type="text"
@@ -89,13 +134,11 @@ const About = () => {
                       value={aboutData.title || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.title && (
-                      <p className="text-danger">{validationErrors.title}</p>
-                    )}
+                    {validationErrors.title && <p className="text-danger">{validationErrors.title}</p>}
                   </div>
 
                   {/* Description */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Description</label>
                     <textarea
                       className="form-control"
@@ -109,7 +152,7 @@ const About = () => {
                   </div>
 
                   {/* Birthday */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Birthday</label>
                     <input
                       type="date"
@@ -124,7 +167,7 @@ const About = () => {
                   </div>
 
                   {/* Age */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Age</label>
                     <input
                       type="number"
@@ -133,13 +176,11 @@ const About = () => {
                       value={aboutData.age || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.age && (
-                      <p className="text-danger">{validationErrors.age}</p>
-                    )}
+                    {validationErrors.age && <p className="text-danger">{validationErrors.age}</p>}
                   </div>
 
                   {/* Website */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Website</label>
                     <input
                       type="url"
@@ -148,13 +189,11 @@ const About = () => {
                       value={aboutData.website || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.website && (
-                      <p className="text-danger">{validationErrors.website}</p>
-                    )}
+                    {validationErrors.website && <p className="text-danger">{validationErrors.website}</p>}
                   </div>
 
                   {/* Degree */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Degree</label>
                     <input
                       type="text"
@@ -163,13 +202,11 @@ const About = () => {
                       value={aboutData.degree || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.degree && (
-                      <p className="text-danger">{validationErrors.degree}</p>
-                    )}
+                    {validationErrors.degree && <p className="text-danger">{validationErrors.degree}</p>}
                   </div>
 
                   {/* Phone */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Phone</label>
                     <input
                       type="text"
@@ -178,13 +215,11 @@ const About = () => {
                       value={aboutData.phone || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.phone && (
-                      <p className="text-danger">{validationErrors.phone}</p>
-                    )}
+                    {validationErrors.phone && <p className="text-danger">{validationErrors.phone}</p>}
                   </div>
 
                   {/* Email */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Email</label>
                     <input
                       type="email"
@@ -193,13 +228,11 @@ const About = () => {
                       value={aboutData.email || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.email && (
-                      <p className="text-danger">{validationErrors.email}</p>
-                    )}
+                    {validationErrors.email && <p className="text-danger">{validationErrors.email}</p>}
                   </div>
 
                   {/* City */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">City</label>
                     <input
                       type="text"
@@ -208,13 +241,11 @@ const About = () => {
                       value={aboutData.city || ""}
                       onChange={handleChange}
                     />
-                    {validationErrors.city && (
-                      <p className="text-danger">{validationErrors.city}</p>
-                    )}
+                    {validationErrors.city && <p className="text-danger">{validationErrors.city}</p>}
                   </div>
 
                   {/* Freelance */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Freelance</label>
                     <select
                       className="form-control"
@@ -236,7 +267,7 @@ const About = () => {
                   </div>
 
                   {/* Brief Description */}
-                  <div className="mb-6">
+                  <div className="mb-3">
                     <label className="form-label">Brief Description</label>
                     <textarea
                       className="form-control"
@@ -245,9 +276,7 @@ const About = () => {
                       onChange={handleChange}
                     />
                     {validationErrors.brief_description && (
-                      <p className="text-danger">
-                        {validationErrors.brief_description}
-                      </p>
+                      <p className="text-danger">{validationErrors.brief_description}</p>
                     )}
                   </div>
 
