@@ -5,12 +5,15 @@ import {
   updateProject,
   deleteProject,
 } from "../../api/projectApi";
-import { getCategory } from "../../api/categoryApi"; // <-- reuse from category
-import { toast } from "react-toastify"; // optional notification
+import { getCategory } from "../../api/categoryApi"; // 👈 new import
 
 const ProjectDetails = () => {
-  const [projects, setProjects] = useState([]);
+  const [projectList, setProjectList] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // form state
   const [formData, setFormData] = useState({
     id: null,
     title: "",
@@ -21,95 +24,112 @@ const ProjectDetails = () => {
     description: "",
   });
 
-  // Fetch projects & categories
-  const fetchProjects = async () => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  // fetch projects
+  const fetchProjectData = async () => {
     try {
+      setLoading(true);
       const res = await getProject();
-      setProjects(res.data || []);
+  
+      // access the correct nested array
+      const data = Array.isArray(res.data?.data) ? res.data.data : [];
+  
+      const prepared = data.map((item, index) => ({
+        id: item.id || Date.now() + index,
+        title: item.title || "",
+        category_id: item.category_id || "",
+        client: item.client || "",
+        project_date: item.project_date || "",
+        project_url: item.project_url || "",
+        description: item.description || "",
+        PortfolioCategory: item.PortfolioCategory || null,
+      }));
+  
+      setProjectList(prepared);
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching projects", err);
+      console.error("❌ API Error:", err);
+      setError(err.message || "Something went wrong");
+      setLoading(false);
     }
   };
 
+  // fetch categories
   const fetchCategories = async () => {
     try {
       const res = await getCategory();
-      setCategories(res.data || []);
+      setCategories(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
-      console.error("Error fetching categories", err);
+      console.error("❌ Category API Error:", err);
+      setCategories([]);
     }
   };
 
   useEffect(() => {
-    fetchProjects();
+    fetchProjectData();
     fetchCategories();
   }, []);
 
-  // Handle input change
+  // handle form input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
-  // Save / Update
-  const handleSave = () => {
-    const apiCall = formData.id
-      ? updateProject(formData.id, formData)
-      : createProject(formData);
+  // handle save (create or update)
+  const handleSave = async () => {
+    try {
+      if (isEditing) {
+        await updateProject(formData.id, formData);
+      } else {
+        await createProject(formData);
+      }
+      fetchProjectData();
+      resetForm();
+      window.bootstrap.Modal.getInstance(
+        document.getElementById("projectModal")
+      ).hide();
+      document.body.classList.remove("modal-open");
+      document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
 
-    apiCall
-      .then(() => {
-        toast.success(formData.id ? "Project updated!" : "Project created!");
-        setFormData({
-          id: null,
-          title: "",
-          category_id: "",
-          client: "",
-          project_date: "",
-          project_url: "",
-          description: "",
-        });
-        fetchProjects();
-
-        // Close modal
-        const modalEl = document.getElementById("projectModal");
-        const modal = window.bootstrap.Modal.getOrCreateInstance(modalEl);
-        modal.hide();
-        document.body.classList.remove("modal-open");
-        document.querySelectorAll(".modal-backdrop").forEach((el) => el.remove());
-      })
-      .catch((err) => {
-        console.error("Error saving project", err);
-        toast.error("Failed to save project");
-      });
+    } catch (err) {
+      console.error("❌ Save Error:", err);
+    }
   };
 
-  // Edit project
+  // handle edit
   const handleEdit = (project) => {
-    setFormData({
-      id: project.id,
-      title: project.title,
-      category_id: project.category_id,
-      client: project.client,
-      project_date: project.project_date,
-      project_url: project.project_url,
-      description: project.description,
-    });
-    const modalEl = document.getElementById("projectModal");
-    window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    setFormData({ ...project });
+    setIsEditing(true);
+    const modal = new window.bootstrap.Modal(
+      document.getElementById("projectModal")
+    );
+    modal.show();
   };
 
-  // Delete project
-  const handleDelete = (id) => {
+  // handle delete
+  const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
-    deleteProject(id)
-      .then(() => {
-        toast.success("Project deleted!");
-        fetchProjects();
-      })
-      .catch((err) => {
-        console.error("Error deleting project", err);
-        toast.error("Failed to delete project");
-      });
+    try {
+      await deleteProject(id);
+      fetchProjectData();
+    } catch (err) {
+      console.error("❌ Delete Error:", err);
+    }
+  };
+
+  // reset form
+  const resetForm = () => {
+    setFormData({
+      id: null,
+      title: "",
+      category_id: "",
+      client: "",
+      project_date: "",
+      project_url: "",
+      description: "",
+    });
+    setIsEditing(false);
   };
 
   return (
@@ -123,98 +143,84 @@ const ProjectDetails = () => {
               className="btn btn-primary"
               data-bs-toggle="modal"
               data-bs-target="#projectModal"
-              onClick={() =>
-                setFormData({
-                  id: null,
-                  title: "",
-                  category_id: "",
-                  client: "",
-                  project_date: "",
-                  project_url: "",
-                  description: "",
-                })
-              }
+              onClick={resetForm}
             >
               Add Project
             </button>
           </div>
+
           <div className="table-responsive text-nowrap">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>SI No.</th>
-                  <th>Title</th>
-                  <th>Category</th>
-                  <th>Client</th>
-                  <th>Project Date</th>
-                  <th>Project URL</th>
-                  <th>Description</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody className="table-border-bottom-0">
-                {projects.length > 0 ? (
-                  projects.map((project, index) => (
-                    <tr key={project.id}>
-                      <td>{index + 1}</td>
-                      <td>{project.title}</td>
-                      <td>
-                        {
-                          categories.find(
-                            (cat) => cat.id === project.category_id
-                          )?.name
-                        }
-                      </td>
-                      <td>{project.client}</td>
-                      <td>{project.project_date}</td>
-                      <td>
-                        {project.project_url && (
-                          <a
-                            href={project.project_url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Visit
-                          </a>
-                        )}
-                      </td>
-                      <td>{project.description}</td>
-                      <td>
-                        <div className="dropdown">
-                          <button
-                            type="button"
-                            className="btn p-0 dropdown-toggle hide-arrow"
-                            data-bs-toggle="dropdown"
-                          >
-                            <i className="icon-base bx bx-dots-vertical-rounded"></i>
-                          </button>
-                          <div className="dropdown-menu">
-                            <button
-                              className="dropdown-item"
-                              onClick={() => handleEdit(project)}
+            {loading ? (
+              <p className="text-center p-3">Loading projects...</p>
+            ) : error ? (
+              <p className="text-danger text-center p-3">{error}</p>
+            ) : (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>SI No.</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Client</th>
+                    <th>Project Date</th>
+                    <th>Project URL</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="table-border-bottom-0">
+                  {projectList.length > 0 ? (
+                    projectList.map((project, index) => (
+                      <tr key={project.id}>
+                        <td>{index + 1}</td>
+                        <td>{project.title}</td>
+                        <td>{project.PortfolioCategory?.name || "—"}</td>
+                        <td>{project.client}</td>
+                        <td>{project.project_date}</td>
+                        <td>
+                          {project.project_url && (
+                            <a
+                              href={project.project_url}
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                              <i className="icon-base bx bx-edit-alt me-1"></i> Edit
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() => handleDelete(project.id)}
-                            >
-                              <i className="icon-base bx bx-trash me-1"></i> Delete
-                            </button>
-                          </div>
-                        </div>
+                              Visit
+                            </a>
+                          )}
+                        </td>
+                        <td>{project.description}</td>
+                        <td>
+                     
+                                <button
+                                  className="dropdown-item"
+                                  onClick={() => handleEdit(project)}
+                                >
+                                  <i className="icon-base bx bx-edit-alt me-1"></i>{" "}
+                                  Edit
+                                </button>
+
+                                <button
+                                  className="dropdown-item"
+                                  onClick={() => handleDelete(project.id)}
+                                >
+                                  <i className="icon-base bx bx-trash me-1"></i>{" "}
+                                  Delete
+                                </button>
+                              
+                         
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" className="text-center">
+                        No projects found.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="text-center">
-                      No projects found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
@@ -229,7 +235,7 @@ const ProjectDetails = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">
-                  {formData.id ? "Edit Project" : "Add Project"}
+                  {isEditing ? "Edit Project" : "Add Project"}
                 </h5>
                 <button
                   type="button"
@@ -239,8 +245,9 @@ const ProjectDetails = () => {
                 ></button>
               </div>
               <div className="modal-body">
+                {/* Form fields */}
                 <div className="mb-3">
-                  <label htmlFor="projectTitle" className="form-label">
+                  <label htmlFor="title" className="form-label">
                     Title
                   </label>
                   <input
@@ -253,7 +260,7 @@ const ProjectDetails = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectCategory" className="form-label">
+                  <label htmlFor="category_id" className="form-label">
                     Category
                   </label>
                   <select
@@ -271,7 +278,7 @@ const ProjectDetails = () => {
                   </select>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectClient" className="form-label">
+                  <label htmlFor="client" className="form-label">
                     Client
                   </label>
                   <input
@@ -284,7 +291,7 @@ const ProjectDetails = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectDate" className="form-label">
+                  <label htmlFor="project_date" className="form-label">
                     Project Date
                   </label>
                   <input
@@ -296,7 +303,7 @@ const ProjectDetails = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectUrl" className="form-label">
+                  <label htmlFor="project_url" className="form-label">
                     Project URL
                   </label>
                   <input
@@ -309,7 +316,7 @@ const ProjectDetails = () => {
                   />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="projectDesc" className="form-label">
+                  <label htmlFor="description" className="form-label">
                     Description
                   </label>
                   <textarea
@@ -331,7 +338,7 @@ const ProjectDetails = () => {
                   Close
                 </button>
                 <button type="button" className="btn btn-primary" onClick={handleSave}>
-                  Save
+                  {isEditing ? "Update" : "Save"}
                 </button>
               </div>
             </div>

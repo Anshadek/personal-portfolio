@@ -88,19 +88,14 @@ const AdminSidebar = () => {
                 <div className="text-truncate" data-i18n="Categories">Categories</div>
               </Link>
             </li>
-            <li className={`menu-item ${isActive('/admin/projects') ? 'active' : ''}`}>
-              <Link to="/admin/projects" className="menu-link">
+            <li className={`menu-item ${isActive('/admin/project-details') ? 'active' : ''}`}>
+              <Link to="/admin/project-details" className="menu-link">
                 <div className="text-truncate" data-i18n="Projects">Projects</div>
               </Link>
             </li>
             <li className={`menu-item ${isActive('/admin/project-images') ? 'active' : ''}`}>
               <Link to="/admin/project-images" className="menu-link">
                 <div className="text-truncate" data-i18n="Project Images">Project Images</div>
-              </Link>
-            </li>
-            <li className={`menu-item ${isActive('/admin/project-details') ? 'active' : ''}`}>
-              <Link to="/admin/project-details" className="menu-link">
-                <div className="text-truncate" data-i18n="Project">Project</div>
               </Link>
             </li>
           </ul>
