@@ -2,7 +2,7 @@ const Hero = (about) => {
     return (
       <section id="hero" className="hero section dark-background">
   
-        <img src={about?.profile_photo} alt="" data-aos="fade-in" className=""/>
+        <img src="http://localhost:5000/uploads/about/1759047356459-256287346.jpg" alt="" data-aos="fade-in" className=""/>
   
         <div className="container" data-aos="fade-up" data-aos-delay="100">
           <h2>Anshad E K</h2>

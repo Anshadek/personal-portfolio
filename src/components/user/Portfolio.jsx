@@ -1,17 +1,32 @@
-import React, { useEffect } from 'react';
-import GLightbox from 'glightbox';
-import 'glightbox/dist/css/glightbox.min.css';
+import React, { useEffect, useState } from "react";
+import { getPortfolio } from "../../api/user/portfolioApi";
+import GLightbox from "glightbox";
+import "glightbox/dist/css/glightbox.min.css";
 
 const Portfolio = () => {
+  const [categories, setCategories] = useState([]);
+  const [items, setItems] = useState([]);
+
   useEffect(() => {
+    // Fetch categories + items from API
+    getPortfolio()
+      .then((res) => {
+        setCategories(res.data.categories || []);
+        setItems(res.data.items || []);
+      })
+      .catch((err) => console.error("Error fetching portfolio:", err));
+
+    // Initialize GLightbox
     const lightbox = GLightbox({
-      selector: '.glightbox',
+      selector: ".glightbox",
       touchNavigation: true,
       loop: true,
       zoomable: true,
     });
 
-    return () => lightbox.destroy(); // clean up on unmount
+    return () => {
+      lightbox.destroy();
+    };
   }, []);
 
   return (
@@ -19,29 +34,56 @@ const Portfolio = () => {
       <div className="container section-title" data-aos="fade-up">
         <h2>Portfolio</h2>
         <p>
-          Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint
-          consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat
-          sit in iste officiis commodi quidem hic quas.
+          Explore a collection of my work that showcases creativity, technical
+          skills, and attention to detail. Each project reflects problem-solving,
+          innovation, and a passion for delivering impactful results. From design
+          to development, here’s a glimpse of what I’ve built and contributed to.
         </p>
       </div>
 
       <div className="container">
-        <div className="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
+        <div
+          className="isotope-layout"
+          data-default-filter="*"
+          data-layout="masonry"
+          data-sort="original-order"
+        >
           {/* Portfolio Filter Buttons */}
-          <ul className="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-            <li data-filter="*" className="filter-active">All</li>
-            <li data-filter=".filter-app">App</li>
-            <li data-filter=".filter-product">Product</li>
-            <li data-filter=".filter-branding">Branding</li>
-            <li data-filter=".filter-books">Books</li>
+          <ul
+            className="portfolio-filters isotope-filters"
+            data-aos="fade-up"
+            data-aos-delay="100"
+          >
+            <li data-filter="*" className="filter-active">
+              All
+            </li>
+            {categories.map((category) => (
+              <li
+                key={category.id}
+                data-filter={`.filter-${category.id}`}
+              >
+                {category.name}
+              </li>
+            ))}
           </ul>
 
           {/* Portfolio Grid */}
-          <div className="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-            {portfolioItems.map((item, index) => (
-              <div key={index} className={`col-lg-4 col-md-6 portfolio-item isotope-item ${item.filter}`}>
+          <div
+            className="row gy-4 isotope-container"
+            data-aos="fade-up"
+            data-aos-delay="200"
+          >
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className={`col-lg-4 col-md-6 portfolio-item isotope-item ${item.filter}`}
+              >
                 <div className="portfolio-content h-100">
-                  <img src={item.image} className="img-fluid" alt={item.title} />
+                  <img
+                    src={item.image}
+                    className="img-fluid"
+                    alt={item.title}
+                  />
                   <div className="portfolio-info">
                     <h4>{item.title}</h4>
                     <p>{item.description}</p>
@@ -53,7 +95,11 @@ const Portfolio = () => {
                     >
                       <i className="bi bi-zoom-in"></i>
                     </a>
-                    <a href="portfolio-details.html" title="More Details" className="details-link">
+                    <a
+                      href="portfolio-details.html"
+                      title="More Details"
+                      className="details-link"
+                    >
                       <i className="bi bi-link-45deg"></i>
                     </a>
                   </div>
@@ -66,80 +112,5 @@ const Portfolio = () => {
     </section>
   );
 };
-
-const portfolioItems = [
-  {
-    title: 'App 1',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/app-1.jpg',
-    filter: 'filter-app',
-  },
-  {
-    title: 'Product 1',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/product-1.jpg',
-    filter: 'filter-product',
-  },
-  {
-    title: 'Branding 1',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/branding-1.jpg',
-    filter: 'filter-branding',
-  },
-  {
-    title: 'Books 1',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/books-1.jpg',
-    filter: 'filter-books',
-  },
-  {
-    title: 'App 2',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/app-2.jpg',
-    filter: 'filter-app',
-  },
-  {
-    title: 'Product 2',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/product-2.jpg',
-    filter: 'filter-product',
-  },
-  {
-    title: 'Branding 2',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/branding-2.jpg',
-    filter: 'filter-branding',
-  },
-  {
-    title: 'Books 2',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/books-2.jpg',
-    filter: 'filter-books',
-  },
-  {
-    title: 'App 3',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/app-3.jpg',
-    filter: 'filter-app',
-  },
-  {
-    title: 'Product 3',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/product-3.jpg',
-    filter: 'filter-product',
-  },
-  {
-    title: 'Branding 3',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/branding-3.jpg',
-    filter: 'filter-branding',
-  },
-  {
-    title: 'Books 3',
-    description: 'Lorem ipsum, dolor sit amet consectetur',
-    image: 'assets/img/portfolio/books-3.jpg',
-    filter: 'filter-books',
-  },
-];
 
 export default Portfolio;
