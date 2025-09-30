@@ -20,7 +20,7 @@ const Sidebar = () => {
       {/* Logo and Name */}
       <a href="#hero" className="logo d-flex align-items-center justify-content-center">
         <img src="/assets/img/logo.png" alt="Logo" />
-        <h1 className="sitename">Alex Smith</h1>
+        <h1 className="sitename">Anshad E K</h1>
       </a>
 
       {/* Social Links */}
