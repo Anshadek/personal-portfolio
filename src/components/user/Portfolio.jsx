@@ -69,44 +69,54 @@ const Portfolio = () => {
 
           {/* Portfolio Grid */}
           <div
-            className="row gy-4 isotope-container"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            {items.map((item, index) => (
-              <div
-                key={index}
-                className={`col-lg-4 col-md-6 portfolio-item isotope-item ${item.filter}`}
-              >
-                <div className="portfolio-content h-100">
-                  <img
-                    src={item.image}
-                    className="img-fluid"
-                    alt={item.title}
-                  />
-                  <div className="portfolio-info">
-                    <h4>{item.title}</h4>
-                    <p>{item.description}</p>
-                    <a
-                      href={item.image}
-                      title={item.title}
-                      data-gallery={`portfolio-gallery-${item.filter}`}
-                      className="glightbox preview-link"
-                    >
-                      <i className="bi bi-zoom-in"></i>
-                    </a>
-                    <a
-                      href="portfolio-details.html"
-                      title="More Details"
-                      className="details-link"
-                    >
-                      <i className="bi bi-link-45deg"></i>
-                    </a>
-                  </div>
-                </div>
-              </div>
-            ))}
+  className="row gy-4 isotope-container"
+  data-aos="fade-up"
+  data-aos-delay="200"
+>
+  {items.map((item, index) => {
+    // pick the first image if available
+    const imageUrl =
+      item.images && item.images.length > 0
+        ? item.images[0].url
+        : "https://via.placeholder.com/400x300?text=No+Image";
+
+    return (
+      <div
+        key={index}
+        className={`col-lg-4 col-md-6 portfolio-item isotope-item ${item.filter}`}
+      >
+        <div className="portfolio-content h-100">
+          <img
+            src={imageUrl}
+            className="img-fluid"
+            alt={item.title}
+            style={{ objectFit: "cover", width: "100%", height: "250px" }}
+          />
+          <div className="portfolio-info">
+            <h4>{item.title}</h4>
+            <p>{item.description}</p>
+            <a
+              href={imageUrl}
+              title={item.title}
+              data-gallery={`portfolio-gallery-${item.filter}`}
+              className="glightbox preview-link"
+            >
+              <i className="bi bi-zoom-in"></i>
+            </a>
+            <a
+              href="portfolio-details.html"
+              title="More Details"
+              className="details-link"
+            >
+              <i className="bi bi-link-45deg"></i>
+            </a>
           </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+
         </div>
       </div>
     </section>
