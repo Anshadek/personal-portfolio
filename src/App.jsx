@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
+// Layouts
 import UserLayout from "./layouts/UserLayout";
 import AdminLayout from "./layouts/AdminLayout";
 
@@ -17,17 +18,20 @@ import Education from "./components/admin/Education";
 import ContactUs from "./components/admin/ContactUs";
 import Category from "./components/admin/Category";
 import ProjectDetails from "./components/admin/ProjectDetails";
+import Login from "./components/admin/Login"; // ✅ Import your login component
 
 function App() {
   return (
     <Routes>
-      {/* USER ROUTES */}
+      {/* ======================= USER ROUTES ======================= */}
       <Route path="/" element={<UserLayout />}>
-        {/* Portfolio details nested route */}
         <Route path="portfolio-details/:id" element={<PortfolioDetails />} />
       </Route>
 
-      {/* ADMIN ROUTES */}
+      {/* ======================= ADMIN LOGIN (No Layout) ======================= */}
+      <Route path="/admin/login" element={<Login />} /> {/* ✅ Standalone login page */}
+
+      {/* ======================= ADMIN ROUTES (With Layout) ======================= */}
       <Route path="/admin" element={<AdminLayout />}>
         <Route index element={<AdminDashboard />} />
         <Route path="about" element={<About />} />

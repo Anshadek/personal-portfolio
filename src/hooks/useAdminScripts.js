@@ -4,11 +4,12 @@ import { useEffect } from 'react';
 // CSS imports
 import '/public/assets/admin/vendor/fonts/iconify-icons.css';
 import '/public/assets/admin/vendor/css/core.css';
+import '/public/assets/admin/vendor/css/pages/page-auth.css';
 import '/public/assets/admin/css/demo.css';
 import '/public/assets/admin/vendor/libs/perfect-scrollbar/perfect-scrollbar.css';
 import '/public/assets/admin/vendor/libs/apex-charts/apex-charts.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap JS bundle (includes Popper)
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
