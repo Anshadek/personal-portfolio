@@ -18,7 +18,9 @@ import Education from "./components/admin/Education";
 import ContactUs from "./components/admin/ContactUs";
 import Category from "./components/admin/Category";
 import ProjectDetails from "./components/admin/ProjectDetails";
-import Login from "./components/admin/Login"; // ✅ Import your login component
+import ProtectedRoute from "./components/admin/ProtectedRoute";
+import PublicRoute from "./components/admin/PublicRoute";
+import Login from "./components/admin/Login";
 
 function App() {
   return (
@@ -28,11 +30,25 @@ function App() {
         <Route path="portfolio-details/:id" element={<PortfolioDetails />} />
       </Route>
 
-      {/* ======================= ADMIN LOGIN (No Layout) ======================= */}
-      <Route path="/admin/login" element={<Login />} /> {/* ✅ Standalone login page */}
+      {/* ======================= ADMIN LOGIN (PUBLIC) ======================= */}
+      <Route
+        path="/admin/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
 
-      {/* ======================= ADMIN ROUTES (With Layout) ======================= */}
-      <Route path="/admin" element={<AdminLayout />}>
+      {/* ======================= ADMIN ROUTES (PROTECTED) ======================= */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route index element={<AdminDashboard />} />
         <Route path="about" element={<About />} />
         <Route path="projects" element={<Projects />} />
