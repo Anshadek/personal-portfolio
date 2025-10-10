@@ -33,20 +33,6 @@ const AdminHeader = () => {
         {/* /Search */}
 
         <ul className="navbar-nav flex-row align-items-center ms-md-auto">
-          {/* GitHub Button */}
-          <li className="nav-item lh-1 me-4">
-            <a
-              className="github-button"
-              href="https://github.com/themeselection/sneat-bootstrap-html-admin-template-free"
-              data-icon="octicon-star"
-              data-size="large"
-              data-show-count="true"
-              aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
-            >
-              Star
-            </a>
-          </li>
-
           {/* User Dropdown */}
           <li className="nav-item navbar-dropdown dropdown-user dropdown">
             <a
@@ -56,7 +42,7 @@ const AdminHeader = () => {
             >
               <div className="avatar avatar-online">
                 <img
-                  src="/assets/img/avatars/1.png"
+                    src="https://ui-avatars.com/api/?name=anshadek&format=svg"
                   alt="User Avatar"
                   className="w-px-40 h-auto rounded-circle"
                 />
@@ -69,14 +55,14 @@ const AdminHeader = () => {
                     <div className="flex-shrink-0 me-3">
                       <div className="avatar avatar-online">
                         <img
-                          src="/assets/img/avatars/1.png"
+                          src="https://ui-avatars.com/api/?name=anshadek&format=svg"
                           alt="User Avatar"
                           className="w-px-40 h-auto rounded-circle"
                         />
                       </div>
                     </div>
                     <div className="flex-grow-1">
-                      <h6 className="mb-0">{user?.name || "Admin"}</h6>
+                      <h6 className="mb-0">Anshad E K</h6>
                       <small className="text-body-secondary">Admin</small>
                     </div>
                   </div>
@@ -84,6 +70,16 @@ const AdminHeader = () => {
               </li>
               <li><div className="dropdown-divider my-1"></div></li>
               <li>
+                <button
+                  onClick={logout}
+                  className="dropdown-item"
+                  style={{ border: "none", background: "none", width: "100%", textAlign: "left" }}
+                >
+                  <i className="icon-base bx bx-power-off icon-md me-3"></i>
+                  <span>Log Out</span>
+                </button>
+              </li>
+              {/* <li>
                 <a className="dropdown-item" href="#">
                   <i className="icon-base bx bx-user icon-md me-3"></i>
                   <span>My Profile</span>
@@ -114,7 +110,7 @@ const AdminHeader = () => {
                   <i className="icon-base bx bx-power-off icon-md me-3"></i>
                   <span>Log Out</span>
                 </button>
-              </li>
+              </li> */}
             </ul>
           </li>
           {/* /User */}

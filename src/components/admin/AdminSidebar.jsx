@@ -28,7 +28,7 @@ const AdminSidebar = () => {
               </svg>
             </span>
           </span>
-          <span className="app-brand-text demo menu-text fw-bold ms-2">Sneat</span>
+          <span className="app-brand-text demo menu-text fw-bold ms-2">Anshad E K</span>
         </Link>
 
         <a href="javascript:void(0);" className="layout-menu-toggle menu-link text-large ms-auto">

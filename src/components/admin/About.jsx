@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getAbout, updateAbout } from "../../api/aboutApi";
+import { toast } from "react-toastify";
 
 const About = () => {
   const [aboutData, setAboutData] = useState({
@@ -32,7 +33,7 @@ const About = () => {
           profile_photo: data.profile_photo || null,
         });
         if (data.profile_photo) {
-          setPreviewPhoto(`http://localhost:5000/uploads/profile_photos/${data.profile_photo}`);
+          setPreviewPhoto(`${data.profile_photo}`);
         }
         setLoading(false);
       })
@@ -79,12 +80,12 @@ const About = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setSuccess("Profile updated successfully!");
+      toast.success("Profile updated successfully!");
     } catch (err) {
       if (err.errors) {
         setValidationErrors(err.errors);
       } else {
-        setError(err.message || "Update failed");
+        toast.error(err.response?.data?.message || "Update failed");
       }
     }
   };
@@ -99,9 +100,6 @@ const About = () => {
                 <h5 className="mb-0">Personal Profile Details</h5>
               </div>
               <div className="card-body">
-                {success && <p className="text-success">{success}</p>}
-                {error && <p className="text-danger">{error}</p>}
-
                 <form onSubmit={handleSubmit} encType="multipart/form-data">
                   {/* Profile Photo */}
                   <div className="mb-3">

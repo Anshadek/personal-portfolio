@@ -21,45 +21,60 @@ import ProjectDetails from "./components/admin/ProjectDetails";
 import ProtectedRoute from "./components/admin/ProtectedRoute";
 import PublicRoute from "./components/admin/PublicRoute";
 import Login from "./components/admin/Login";
+import "./index.css";
+
+// Toast
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <Routes>
-      {/* ======================= USER ROUTES ======================= */}
-      <Route path="/" element={<UserLayout />}>
-        <Route path="portfolio-details/:id" element={<PortfolioDetails />} />
-      </Route>
+    <>
+      {/* Global Toast Notifications */}
+      {/* <ToastContainer
+        className="toastify-demo"
+        position="top-right"
+        autoClose={30000}
+        theme="colored"
+      /> */}
 
-      {/* ======================= ADMIN LOGIN (PUBLIC) ======================= */}
-      <Route
-        path="/admin/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
+      <Routes>
+        {/* ======================= USER ROUTES ======================= */}
+        <Route path="/" element={<UserLayout />}>
+          <Route path="portfolio-details/:id" element={<PortfolioDetails />} />
+        </Route>
 
-      {/* ======================= ADMIN ROUTES (PROTECTED) ======================= */}
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route index element={<AdminDashboard />} />
-        <Route path="about" element={<About />} />
-        <Route path="projects" element={<Projects />} />
-        <Route path="project-images" element={<ProjectImages />} />
-        <Route path="project-details" element={<ProjectDetails />} />
-        <Route path="experience" element={<Experience />} />
-        <Route path="education" element={<Education />} />
-        <Route path="contact-us" element={<ContactUs />} />
-        <Route path="category" element={<Category />} />
-      </Route>
-    </Routes>
+        {/* ======================= ADMIN LOGIN (PUBLIC) ======================= */}
+        <Route
+          path="/admin/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+
+        {/* ======================= ADMIN ROUTES (PROTECTED) ======================= */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<AdminDashboard />} />
+          <Route path="about" element={<About />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="project-images" element={<ProjectImages />} />
+          <Route path="project-details" element={<ProjectDetails />} />
+          <Route path="experience" element={<Experience />} />
+          <Route path="education" element={<Education />} />
+          <Route path="contact-us" element={<ContactUs />} />
+          <Route path="category" element={<Category />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

@@ -29,23 +29,12 @@ const Login = () => {
               {/* Logo */}
               <div className="app-brand justify-content-center">
                 <a href="/" className="app-brand-link gap-2">
-                  <span className="app-brand-logo demo text-primary">
-                    <svg width="25" viewBox="0 0 25 42" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <path
-                          id="path-1"
-                          d="M13.79,0.36L3.4,7.44C0.57,9.69-0.38,12.48,0.56,15.8C0.69,16.23,1.1,17.79,3.12,19.23C3.81,19.72,5.32,20.38,7.65,21.22L7.6,21.25L2.63,24.55C0.45,26.3,0.09,28.51,1.56,31.17C2.84,32.82,5.21,33.26,7.09,32.54C8.35,32.06,11.46,30,16.42,26.37C18.03,24.5,18.7,22.45,18.41,20.24C17.96,17.53,16.18,15.58,13.05,14.37L10.92,13.47L18.62,7.98L13.79,0.36Z"
-                        />
-                      </defs>
-                      <use fill="currentColor" xlinkHref="#path-1" />
-                    </svg>
-                  </span>
-                  <span className="app-brand-text demo text-heading fw-bold">Sneat</span>
+                  <span className="app-brand-text demo text-heading fw-bold">Anshad E K</span>
                 </a>
               </div>
 
-              <h4 className="mb-1">Welcome to Sneat! 👋</h4>
-              <p className="mb-6">Please sign in to your account and start the adventure</p>
+              {/* <h4 className="mb-1">Welcome to Sneat! 👋</h4>
+              <p className="mb-6">Please sign in to your account and start the adventure</p> */}
 
               <form className="mb-6" onSubmit={handleSubmit}>
                 <div className="mb-6">
@@ -68,7 +57,7 @@ const Login = () => {
                       type="password"
                       id="password"
                       className="form-control"
-                      placeholder="••••••••••••"
+                      placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
@@ -80,23 +69,23 @@ const Login = () => {
 
                 {error && <p className="text-danger">{error}</p>}
 
-                <div className="mb-8 d-flex justify-content-between">
+                {/* <div className="mb-8 d-flex justify-content-between">
                   <div className="form-check mb-0">
                     <input className="form-check-input" type="checkbox" id="remember-me" />
                     <label className="form-check-label" htmlFor="remember-me">Remember Me</label>
                   </div>
                   <a href="#"><span>Forgot Password?</span></a>
-                </div>
+                </div> */}
 
                 <div className="mb-6">
                   <button type="submit" className="btn btn-primary d-grid w-100">Login</button>
                 </div>
               </form>
 
-              <p className="text-center">
+              {/* <p className="text-center">
                 <span>New on our platform? </span>
                 <a href="#"><span>Create an account</span></a>
-              </p>
+              </p> */}
             </div>
           </div>
         </div>
